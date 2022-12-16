@@ -1,17 +1,39 @@
 import random
+import hangman_lists
+from hangman_lists import logo, stages
 
-word_list = ["ardvark", "baboon", "camel"]
-
-chosen_word = random.choice(word_list)
+print(logo)
+chosen_word = random.choice(hangman_lists.word_list)
 print(chosen_word)
+word_lenght = len(chosen_word)
+lives = 6
+display = []
+for _ in chosen_word:
+    display += "_"
+print(f"{' '.join(display)}")
+end_of_game = False
 
-guess = input("Guess a letter: ").lower()
 
+while not end_of_game:
+    guess = input("Tippelj egy betűt: ").lower()
+    if guess in display:
+        print("Ezt a betűt már írtad!")
+    for position in range(word_lenght):
+        letter = chosen_word[position]
+        if letter == guess:
+            display[position] = letter
 
-word = ""
-for letter in range(0, len(chosen_word)):
-    if chosen_word[letter] == guess:
-        word += guess
-    elif guess != chosen_word[letter]:  #akár else:
-        word += "_"
-print(word)
+    if guess not in chosen_word:
+        lives -= 1
+        print(f'A(z) "{guess}" betű nincs benne a szóban, vesztettél egy életet.')
+
+    print(display)
+    print(stages[lives])
+    if lives == 0:
+        end_of_game = True
+        print("Vesztettél!")
+        print(f"A szó: {chosen_word} \nA te tippeid: {' '.join(display)}")
+    if "_" not in display:
+        end_of_game = True
+        print("Győztél!")
+        print(f"{' '.join(display)}")
